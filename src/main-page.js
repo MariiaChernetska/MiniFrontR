@@ -19,7 +19,7 @@ function paramsData(){
       }
 
 class MainPage  extends React.Component{
-      dick = new paramsData();
+      p = new paramsData();
       constructor (props) {
         super(props);
          this.state = { 
