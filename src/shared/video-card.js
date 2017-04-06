@@ -9,16 +9,13 @@ class VideoCard extends React.Component{
     }
     render(){
         return(
-                    <div className="one-video">
-
+        <div className="one-video">
             <div className="image-block">
                 <img src={GV.apiHost+this.props.video.screenShot} className="img-responsive"/>
                 <div className="rate-line">
                    <span className="yellow-stars">
                        <CRating rating={this.props.video.rating} readonly={true}/>
                        </span> 
-                    
-                    
                    <span className="pull-right"><i className="glyphicon glyphicon-user"></i> {this.props.video.ratingsAmount}</span>
 
                 </div>

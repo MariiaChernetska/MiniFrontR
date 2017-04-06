@@ -1,36 +1,23 @@
 import React from 'react'
 import axios from 'axios'
-import GV from './shared/global-vars'
-import './scss/main.scss'
+import GV from '../shared/global-vars'
+import '../scss/main.scss'
 import cookie from 'react-cookie';
-import VideoCard from './shared/video-card'
-  axios.interceptors.request.use(function (config) {
-            var authData = cookie.load('authorizationData');
-            if(authData && authData.token){
-                config.headers['Authorization'] = `Basic ${authData.token}`
-            }
-            return config;
-        }, function (error) {
-            // Do something with request error 
-            return Promise.reject(error);
-        });
-
+import VideoCard from '../shared/video-card'
+import OfficeForm from './office-form'
+ 
 class OfficePage extends React.Component{
     constructor(props) {
     super(props);   
      this.state = {
-        fileVal: '',
-        titleVal: '',
-        descrVal: '',
-        file: '',
+       
         pageNum: 1,
         userVideos: [],
         owlInstance: null,
         loadMore: false
      
     };
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderNewVideo = this.renderNewVideo.bind(this)
     this.loadMore = this.loadMore.bind(this);
 }
 
@@ -73,36 +60,16 @@ class OfficePage extends React.Component{
       
         
     }
-
-    handleInputChange(event){
-         const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        console.log(name+ ' '+ value)
-        if(name === "fileVal"){
-                let files = target.files;
-                this.setState({
-                file: files[0]
-            })
-
-        }
-        
+    renderNewVideo(newVideo){
+        var buf = this.state.userVideos;
+        buf.unshift(newVideo)
+        buf.pop()
         this.setState({
-            [name]:value
+            userVideos: buf
         })
-        
-  
-}
-    handleSubmit(event){
-        event.preventDefault();
-        var data = new FormData();
-        data.append('file', this.state.file);
-        data.append('title', this.state.titleVal);
-        data.append('description', this.state.descrVal);
-    
-        axios.post(GV.apiHost+'videos/videosave', data).then(function(res){
-            console.log(res)
-        });
+       
+         this.state.owlInstance.owlCarousel('destroy');
+            setTimeout(() => this.owlRefresh(1), 2);
     }
 
     render(){
@@ -129,20 +96,7 @@ class OfficePage extends React.Component{
             
             <div className="row">
             <div className="col-sm-6 col-sm-offset-3">
-                <form name="form1" onSubmit={this.handleSubmit} className="video-upload-form" encType="multipart/form-data">
-                    <div>
-                        <input name="fileVal" value={this.state.fileVal} onChange={this.handleInputChange} type="file"   className="upload form-control input-lg"/>
-                    </div>
-                    <div>
-                        <input name="titleVal" value={this.state.titleVal} onChange={this.handleInputChange} placeholder="title" className="upload form-control input-lg" type="text"/>
-                    </div>
-                    <div>
-                        <textarea name="descrVal" value={this.state.descrVal} onChange={this.handleInputChange} placeholder="description" className="upload form-control input-lg"/>
-                    </div>
-                    <div>
-                        <button className="btn btn-dark top20"  type="submit">Save</button>
-                    </div>
-                </form>
+                <OfficeForm getSavedVideo={this.renderNewVideo}/>
             </div>
         </div>
                </div>
